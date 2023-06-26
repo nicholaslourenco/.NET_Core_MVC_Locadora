@@ -1,0 +1,97 @@
+﻿@model List<Filme>
+@{ 
+    ViewData["Title"] = "Listagem de Filmes";
+
+    //Recuperar dados da controller
+    int FiltroPorPag = Int32.Parse(ViewData["filmesPorPagina"].ToString());
+    int paginaAtual = Int32.Parse(ViewData["paginaAtual"].ToString());
+
+    int NumLivrosPorPag = (Model.Count<FiltroPorPag ? Model.Count : FiltroPorPag);
+    int NumTotalDePag = 0;
+    @if (NumLivrosPorPag > 0)
+    {
+        NumTotalDePag = Model.Count / NumLivrosPorPag + (Model.Count%NumLivrosPorPag == 0 ? 0 : 1);
+    }
+}
+
+<div class="text-center">
+    <h1 class="display-4">Bem vindo ao sistema Locadora</h1>
+    <p>Crie já sua conta e assista seus filmes favoritos à vontade.</p>
+    <br/>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <form class="form-inline" method="POST">
+            <div class="form-group mb-2">
+                <select name="TipoFiltro" class="form-control">
+                    <option value="Nome">Nome</option>
+                    <option value="Genero">Genero</option>
+                </select>
+            </div>
+            <div class="form-group mb-2 mx-sm-3">
+                <input type="text" placeholder="Filtro" name="Filtro" class="form-control" />
+            </div>
+
+            <div>
+                <select name="intensPorPagina" id="intensPorPagina">
+                    <option value="10">10 filmes</option>
+                    <option value="15">15 filmes</option>
+                    <option value="30">30 filmes</option>
+                    <option value="50">50 filmes</option>
+                    <option value=@Model.Count>Todos</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary mb-2">Pesquisar</button>
+
+            <div id="SeletorPaginas">
+                <span>Página:</span>
+                @for (int i = 1; i < NumTotalDePag; i++)
+                {
+                    <span><a href="/Livro/Listagem?paginaAtual=@i">@i, </a></span>
+                }
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-striped">
+            @if (Model.Count > 0)
+            {
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Titulo</th>
+                        <th>Gênero</th>
+                        <th>Classificação Indicativa</th>
+                        <th>Imagem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = (paginaAtual - 1) * NumLivrosPorPag; i < (NumLivrosPorPag * paginaAtual < Model.Count? 
+                    NumLivrosPorPag * paginaAtual : Model.Count); i++)
+                    {
+                        <tr>
+                            <td>@Model[i].Id</td>
+                            <td>@Model[i].Nome</td>
+                            <td>@Model[i].Genero</td>
+                            <td>@Model[i].Classificacao</td>
+                            <img src="@Model[i].CaminhoImagem" />
+                            <td><a href="/Filme/Edicao/@Model[i].Id">Editar</a></td>
+                            <td><a href="/Locacao/Cadastro/@Model[i].Id">Alugar</a></td>
+                            <td><a href="/Filme/Excluir/@Model[i].Id">Excluir</a></td>
+                        </tr>
+                    }
+                </tbody>
+            }
+            else
+            {
+                <p>Nenhum registro encontrado!</p>
+            }
+        </table>
+    </div>
+</div>
