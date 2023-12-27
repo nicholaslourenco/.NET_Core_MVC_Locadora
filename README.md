@@ -1,10 +1,10 @@
 # .NET_Core_MVC_Locadora
-![Badge de Encerrado](https://img.shields.io/badge/status-Encerrado-red)
+![Badge de Encerrado](https://img.shields.io/badge/status-Em_Andamento-green)
 
 Repositório para o versionamento do sistema web "Locadora" destinado para a locação de filmes online.
 
 ## Descrição
-Projeto de site da web pessoal feito com o intuito de aplicar os conhecimentos obtidos no curso técnico em Informática para Internet do Senac, implementando a utilização de web api.
+Projeto de site da web pessoal feito com o intuito de aplicar os conhecimentos obtidos no curso técnico em Informática para Internet do Senac, e aprofundar alguns conceitos sobre a programação web, implementando a utilização de web api.
 
 O software tem a proposta de ser uma locadora online de filmes, com uma estrutura de gestão de filmes disponíveis, usuários e processos de locação, assim simulando todos os aspectos de uma locadora online. O sistema utiliza Web Api para se comunicar com o banco de dados e para se ligar ao app "Locadora Mobile", assim a Web Api permite que tanto o sistema web quanto o app tenham acesso aos mesmos dados e permitam ao usuário a mesma experiência, porém em plataformas diferentes.
 
