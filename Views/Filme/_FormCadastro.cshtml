@@ -1,4 +1,4 @@
-@model Filme
+@model FilmeViewModel
 <div class="row justify-content-md-center">
     <form asp-action="Cadastro" method="POST" class="col-md-4" enctype="multipart/form-data">
         <input type="hidden" asp-for="Id" />
@@ -14,8 +14,11 @@
             <label asp-for="Classificacao">Classificação Indicativa</label>
             <input asp-for="Classificacao" required/>
         </div>
-            <label asp-for="CaminhoImagem">Cartaz do Filme</label>
-            <input type="file" asp-for="CaminhoImagem" required/>
+        <div>
+            <label>Cartaz do Filme</label>
+            <input type="file" name="file" accept="image/jpg, image/png" required/>
+            <h3>@ViewData["Message"]</h3>
+        </div>
         <input type="submit" value="Salvar" class="btn btn-primary"/>
     </form>
 </div>

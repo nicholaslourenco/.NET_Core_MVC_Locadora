@@ -1,97 +1,118 @@
-﻿@model List<Filme>
-@{ 
+@model List<FilmeViewModel>
+@{
     ViewData["Title"] = "Listagem de Filmes";
 
     //Recuperar dados da controller
     int FiltroPorPag = Int32.Parse(ViewData["filmesPorPagina"].ToString());
     int paginaAtual = Int32.Parse(ViewData["paginaAtual"].ToString());
 
-    int NumLivrosPorPag = (Model.Count<FiltroPorPag ? Model.Count : FiltroPorPag);
+    int NumLivrosPorPag = (Model.Count < FiltroPorPag ? Model.Count : FiltroPorPag);
     int NumTotalDePag = 0;
     @if (NumLivrosPorPag > 0)
     {
-        NumTotalDePag = Model.Count / NumLivrosPorPag + (Model.Count%NumLivrosPorPag == 0 ? 0 : 1);
+        NumTotalDePag = Model.Count / NumLivrosPorPag + (Model.Count % NumLivrosPorPag == 0 ? 0 : 1);
     }
 }
 
-<div class="text-center">
-    <h1 class="display-4">Bem vindo ao sistema Locadora</h1>
-    <p>Crie já sua conta e assista seus filmes favoritos à vontade.</p>
-    <br/>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <form class="form-inline" method="POST">
-            <div class="form-group mb-2">
-                <select name="TipoFiltro" class="form-control">
-                    <option value="Nome">Nome</option>
-                    <option value="Genero">Genero</option>
-                </select>
-            </div>
-            <div class="form-group mb-2 mx-sm-3">
-                <input type="text" placeholder="Filtro" name="Filtro" class="form-control" />
-            </div>
-
-            <div>
-                <select name="intensPorPagina" id="intensPorPagina">
-                    <option value="10">10 filmes</option>
-                    <option value="15">15 filmes</option>
-                    <option value="30">30 filmes</option>
-                    <option value="50">50 filmes</option>
-                    <option value=@Model.Count>Todos</option>
-                </select>
-            </div>
-
-            <button type="submit" class="btn btn-primary mb-2">Pesquisar</button>
-
-            <div id="SeletorPaginas">
-                <span>Página:</span>
-                @for (int i = 1; i < NumTotalDePag; i++)
-                {
-                    <span><a href="/Livro/Listagem?paginaAtual=@i">@i, </a></span>
-                }
-            </div>
-
-        </form>
+<div>
+    <div class="text-center">
+        <h1 class="display-4 textos">Bem vindo ao sistema Locadora</h1>
+        <p class="textos">Crie já sua conta e assista seus filmes favoritos à vontade.</p>
+        <br />
     </div>
-</div>
 
-<div class="row">
-    <div class="col-md-12">
-        <table class="table table-striped">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-inline" method="POST">
+                <div class="form-group mb-2">
+                    <select id="tipoFiltro" name="TipoFiltro" class="form-control">
+                        <option value="Nome">Nome</option>
+                        <option value="Genero">Genero</option>
+                    </select>
+                </div>
+                <div class="form-group mb-2 mx-sm-3">
+                    <input id="filtro" type="text" placeholder="Filtro" name="Filtro" class="form-control" />
+                </div>
+
+                <!--<div>
+                    <select name="intensPorPagina" id="intensPorPagina">
+                        <option value="10">10 filmes</option>
+                        <option value="15">15 filmes</option>
+                        <option value="30">30 filmes</option>
+                        <option value="50">50 filmes</option>
+                        <option value=@Model.Count>Todos</option>
+                    </select>
+                </div>-->
+
+                <button type="submit" class="btn btn-primary mb-2" id="btnSalvar" onclick="Buscar()">Pesquisar</button>
+                <!--<div>
+                @Html.ActionLink(
+                    "Pesquisar",
+                    "Index",
+                    "Home",
+                    "https",
+                    "localhost:5072",
+                    null,
+                    null,
+                    new { @class = "btn btn-primary mb-2", @id = "btnSalvar", @onclick="Buscar()" }
+                    )
+                </div>-->
+
+                <div id="SeletorPaginas">
+                    <span>Página:</span>
+                    @for (int i = 1; i < NumTotalDePag; i++)
+                    {
+                        <span><a href="/Home/Imdex?paginaAtual=@i">@i, </a></span>
+                    }
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="row m-0">
+        <div class="col-md-12 row m-0 divContainerCards">
             @if (Model.Count > 0)
             {
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Titulo</th>
-                        <th>Gênero</th>
-                        <th>Classificação Indicativa</th>
-                        <th>Imagem</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (int i = (paginaAtual - 1) * NumLivrosPorPag; i < (NumLivrosPorPag * paginaAtual < Model.Count? 
-                    NumLivrosPorPag * paginaAtual : Model.Count); i++)
-                    {
-                        <tr>
-                            <td>@Model[i].Id</td>
-                            <td>@Model[i].Nome</td>
-                            <td>@Model[i].Genero</td>
-                            <td>@Model[i].Classificacao</td>
-                            <img src="@Model[i].CaminhoImagem" />
-                            <td><a href="/Filme/Edicao/@Model[i].Id">Editar</a></td>
-                            <td><a href="/Locacao/Cadastro/@Model[i].Id">Alugar</a></td>
-                            <td><a href="/Filme/Excluir/@Model[i].Id">Excluir</a></td>
-                        </tr>
-                    }
-                </tbody>
+                @for (int i = (paginaAtual - 1) * NumLivrosPorPag; i < (NumLivrosPorPag * paginaAtual < Model.Count ?
+               NumLivrosPorPag * paginaAtual : Model.Count); i++)
+                {
+                    <div class="filmeCard row col-md-3 offset-md-1">
+                        <img class="col-md-12 imgCard" src="data:image/jpeg;base64, @Model[i].CaminhoImagem" />
+                        <p class="col-md-9 textos">Título: @Model[i].Nome</p>
+                        <p class="col-md-9 textos">Gênero: @Model[i].Genero</p>
+                        <p class="col-md-9 textos">Classificação Indicativa: @Model[i].Classificacao</p>
+                        <p class="col-md-4"><a href="/Filme/Edicao/@Model[i].Id">Editar</a></p>
+                        <p class="col-md-4"><a href="/Locacao/Cadastro/@Model[i].Id">Alugar</a></p>
+                        <p class="col-md-4"><a href="/Filme/Excluir/@Model[i].Id">Excluir</a></p>
+                    </div>
+                }
             }
             else
             {
-                <p>Nenhum registro encontrado!</p>
+                <p class="textos">Nenhum registro encontrado!</p>
             }
-        </table>
+        </div>
     </div>
+
+    <script type="text/javascript">
+
+        function Buscar() {
+            var tipoDeFiltro = $("#tipoFiltro").val();
+            var filtroColocado = $("#filtro").val();
+
+            console.log("Tipo de Filtro: " + tipoDeFiltro + " Filtro: " + filtroColocado);
+
+            $.ajax({
+                method: "GET",
+                url: "http://localhost:5072/Home/Index/" + tipoDeFiltro + "/" + filtroColocado,
+                data: {
+                    tipoFiltro: tipoDeFiltro,
+                    filtro: filtroColocado
+                }
+            })
+        }
+
+    </script>
+
 </div>

@@ -1,6 +1,6 @@
 namespace Locadora.Models
 {
-    public class Usuario
+    public class UsuarioViewModel
     {
         public static int admin = 0;
         public static int padrao = 1;

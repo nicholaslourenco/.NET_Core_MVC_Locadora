@@ -1,26 +1,40 @@
-@model List<Locacao>
+@model List<LocacaoViewModel>
 @{
     ViewData["Title"] = "Listagem de Empréstimos";
 
+
+
     //Recuperar dados da controller
+
     int FiltroPorPag = Int32.Parse(ViewData["emprestimosPorPagina"].ToString());
+
     int paginaAtual = Int32.Parse(ViewData["paginaAtual"].ToString());
+
     DateTime Date = DateTime.Now;
 
+
+
     int NumEmprestimosPorPag = (Model.Count < FiltroPorPag ? Model.Count : FiltroPorPag);
+
     int NumTotalDePag = 0;
     @if (NumEmprestimosPorPag > 0)
+
     {
+
         NumTotalDePag = Model.Count / NumEmprestimosPorPag + (Model.Count % NumEmprestimosPorPag == 0 ? 0 : 1);
+
     }
 }
-<head><link rel="stylesheet" type="text/css" href="~/css/site.css" /></head>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="~/css/site.css" />
+</head>
 <div class="row">
     <div class="col-md-12">
         <form asp-controller="Locacao" asp-action="Listagem" class="form-inline" method="GET">
             <div class="form-group mb-2">
                 <select name="TipoFiltro" class="form-control">
-                    <option value="Usuario">Usuário</option>
+                    <option value="NomeUsuario">Usuário</option>
                     <option value="Filme">Filme</option>
                 </select>
             </div>
@@ -41,8 +55,9 @@
             <button type="submit" class="btn btn-primary mb-2">Pesquisar</button>
 
             <div id="SeletorPaginas">
-                <span>  Página:</span>
+                <span> Página:</span>
                 @for (int i = 1; i < NumTotalDePag; i++)
+
                 {
                     <span><a href="/Locacao/Listagem?paginaAtual=@i">@i, </a></span>
                 }
@@ -58,12 +73,12 @@
             {
                 <thead>
                     <tr>
-                        <th>Id</th>
-                        <th>Usuario</th>
-                        <th>Data Locação</th>
-                        <th>Data Devolução</th>
-                        <th>Filme</th>
-                        <th>Genero</th>
+                        <th class="textos">Id</th>
+                        <th class="textos">Usuario</th>
+                        <th class="textos">Data Locação</th>
+                        <th class="textos">Disponível até</th>
+                        <th class="textos">Filme</th>
+                        <th class="textos">Gênero</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -71,38 +86,16 @@
                    Model.Count ?
                    NumEmprestimosPorPag * paginaAtual : Model.Count); i++)
                     {
-
-                        @if (@Model[i].DataDevolucao < Date)
-                        {
-                            <style>
-                                .td {
-                                    color: red;
-                                }
-                            </style>
-                            <tr>
-                                <td class="td">@Model[i].Id</td>
-                                <td class="td">@Model[i].NomeUsuario</td>
-                                <td class="td">@Model[i].DataLocacao.ToString("dd/MM/yyyy")</td>
-                                <td class="td">@Model[i].DataDevolucao.ToString("dd/MM/yyyy")</td>
-                                <td class="td">@Model[i].Filme.Nome</td>
-                                <td class="td">@Model[i].Filme.Genero</td>
-                                <td><a href="/Locacao/Edicao/@Model[i].Id">Editar</a></td>
-                                <td><a href="/Locacao/Edicao/@Model[i].Id">Excluir</a></td>
-                            </tr>
-                        }
-                        else
-                        {
-                            <tr>
-                                <td>@Model[i].Id</td>
-                                <td>@Model[i].NomeUsuario</td>
-                                <td>@Model[i].DataLocacao.ToString("dd/MM/yyyy")</td>
-                                <td>@Model[i].DataDevolucao.ToString("dd/MM/yyyy")</td>
-                                <td>@Model[i].Filme.Nome</td>
-                                <td>@Model[i].Filme.Genero</td>
-                                <td><a href="/Locacao/Edicao/@Model[i].Id">Editar</a></td>
-                                <td><a href="/Locacao/Excluir/@Model[i].Id">Excluir</a></td>
-                            </tr>
-                        }
+                        <tr>
+                            <td class="textos">@Model[i].Id</td>
+                            <td class="textos">@Model[i].NomeUsuario</td>
+                            <td class="textos">@Model[i].DataLocacao.ToString("dd/MM/yyyy")</td>
+                            <td class="textos">@Model[i].DataLocacao.AddDays(7).ToString("dd/MM/yyyy")</td>
+                            <td class="textos">@Model[i].Filme.Nome</td>
+                            <td class="textos">@Model[i].Filme.Genero</td>
+                            <td><a href="/Locacao/Edicao/@Model[i].Id">Editar</a></td>
+                            <td><a href="/Locacao/Excluir/@Model[i].Id">Excluir</a></td>
+                        </tr>
                     }
                 </tbody>
             }

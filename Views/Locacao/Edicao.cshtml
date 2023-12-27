@@ -5,50 +5,35 @@
 
 <h1 class="row justify-content-md-center">Edição de Empréstimo</h1>
 <div class="row justify-content-md-center">
-    <form asp-action="Cadastro" method="POST" class="col-md-4">
+    <form asp-action="Edicao" method="POST" class="col-md-4">
         <input type="hidden" asp-for="Locacao.Id" />
         <fieldset>
-            <legend>Usuario</legend>
+            <legend>Usuário</legend>
             <div class="form-group">
                 <label asp-for="Locacao.NomeUsuario">Nome</label>
-                <input asp-for="Locacao.NomeUsuario" class="form-control" readonly="readonly"/>
+                <input asp-for="Locacao.NomeUsuario" class="form-control"/>
             </div>
             <div class="form-group">
                 <label asp-for="Locacao.Telefone">Telefone</label>
-                <input asp-for="Locacao.Telefone" class="form-control" readonly="readonly"/>
+                <input asp-for="Locacao.Telefone" class="form-control"/>
             </div>
         </fieldset>
         <fieldset>
-            <legend>Livro</legend>
+            <legend>Filme</legend>
             <div class="form-group">
                 <label asp-for="Locacao.DataLocacao">Data de Locação</label>
-                <input type="date" asp-for="Locacao.DataLocacao" class="form-control"/>
+                <input type="date" asp-for="Locacao.DataLocacao" class="form-control" readonly="readonly"/>
             </div>
             <div class="form-group">
-                <label asp-for="Locacao.DataDevolucao">Data de Devolução</label>
-                <input type="date" asp-for="Locacao.DataDevolucao" class="form-control"/>
-            </div>
-            <div class="form-group">
-                <label asp-for="Locacao.FilmeId">Livro</label>
-                <select asp-for="Locacao.FilmeId" class="form-control">
-                    @foreach(Filme l in Model.Filmes)
+                <label asp-for="Locacao.FilmeId">Filme</label>
+                <select asp-for="Locacao.FilmeId" class="form-control" readonly="readonly">
+                    @foreach(FilmeViewModel l in Model.Filmes)
                     {
                         <option value="@l.Id">@l.Nome</option>
                     }
                 </select>
             </div>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" asp-for="Locacao.Devolvido" />
-                <label class="form-check-label" asp-for="Locacao.Devolvido">Devolvido</label>
-            </div>
         </fieldset>
         <input type="submit" value="Salvar" class="btn btn-primary"/>
-        </br>
-        </br>
-        </br>
-        </br>
-        </br>
-        </br>
-        </br>
     </form>
 </div>

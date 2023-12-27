@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -19,6 +20,10 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 }
 app.UseStaticFiles();
+
+app.UseCors(
+    options => options.AllowAnyOrigin().AllowAnyMethod()
+);
 
 app.UseRouting();
 

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "/jZbarqO5at3/NXhKs+OPLSC6E33nkAf72zhHXN2heQ=",
+  "Hash": "wDZC5kIcOTX1haZfLevPu3I+Iq5ksv8KN5CPOezVrhk=",
   "Source": "Locadora",
   "BasePath": "_content/Locadora",
   "Mode": "Default",
@@ -85,23 +85,6 @@
       "OriginalItemSpec": "wwwroot\\favicon.ico"
     },
     {
-      "Identity": "C:\\GitHub\\Projetos WEB\\Locadora\\wwwroot\\images\\imgTeste.jpeg",
-      "SourceId": "Locadora",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\GitHub\\Projetos WEB\\Locadora\\wwwroot\\",
-      "BasePath": "_content/Locadora",
-      "RelativePath": "images/imgTeste.jpeg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\images\\imgTeste.jpeg"
-    },
-    {
       "Identity": "C:\\GitHub\\Projetos WEB\\Locadora\\wwwroot\\js\\jquery.mask.min.js",
       "SourceId": "Locadora",
       "SourceType": "Discovered",
@@ -117,6 +100,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\jquery.mask.min.js"
+    },
+    {
+      "Identity": "C:\\GitHub\\Projetos WEB\\Locadora\\wwwroot\\js\\jquery.min.js",
+      "SourceId": "Locadora",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\GitHub\\Projetos WEB\\Locadora\\wwwroot\\",
+      "BasePath": "_content/Locadora",
+      "RelativePath": "js/jquery.min.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\jquery.min.js"
     },
     {
       "Identity": "C:\\GitHub\\Projetos WEB\\Locadora\\wwwroot\\js\\site.js",
@@ -1035,6 +1035,40 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation\\LICENSE.md"
+    },
+    {
+      "Identity": "C:\\GitHub\\Projetos WEB\\Locadora\\wwwroot\\lib\\jquery\\dist\\code.jquery.com_jquery-3.7.0.min.js",
+      "SourceId": "Locadora",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\GitHub\\Projetos WEB\\Locadora\\wwwroot\\",
+      "BasePath": "_content/Locadora",
+      "RelativePath": "lib/jquery/dist/code.jquery.com_jquery-3.7.0.min.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\lib\\jquery\\dist\\code.jquery.com_jquery-3.7.0.min.js"
+    },
+    {
+      "Identity": "C:\\GitHub\\Projetos WEB\\Locadora\\wwwroot\\lib\\jquery\\dist\\jquery-3.7.0.js",
+      "SourceId": "Locadora",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\GitHub\\Projetos WEB\\Locadora\\wwwroot\\",
+      "BasePath": "_content/Locadora",
+      "RelativePath": "lib/jquery/dist/jquery-3.7.0.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\lib\\jquery\\dist\\jquery-3.7.0.js"
     },
     {
       "Identity": "C:\\GitHub\\Projetos WEB\\Locadora\\wwwroot\\lib\\jquery\\dist\\jquery.js",

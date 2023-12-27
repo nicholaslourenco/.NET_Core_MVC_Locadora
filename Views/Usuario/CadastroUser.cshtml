@@ -1,4 +1,4 @@
-@model Usuario
+@model UsuarioViewModel
 
 <h1>Registre um Usuário</h1>
 
@@ -8,7 +8,7 @@
     <input type="text" name="Senha" id="userSenha" placeholder="Senha">
 
     <select name="tipo" id="userTipo" disabled>
-        <option value="@Usuario.padrao">Padrão</option>
+        <option value="@UsuarioViewModel.padrao">Padrão</option>
     </select>
 
     <input type="submit" value="Registrar">

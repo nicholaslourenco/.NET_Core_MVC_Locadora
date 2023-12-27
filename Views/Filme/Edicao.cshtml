@@ -1,6 +1,28 @@
-@model Filme
+@model FilmeViewModel
 @{
     ViewData["Title"] = "Edição de Filmes";
 }
 <h1 class="row justify-content-md-center">Edição de Filmes</h1>
-<partial name="_FormCadastro" for="@Model" />
+<div class="row justify-content-md-center">
+    <form asp-action="Edicao" method="POST" class="col-md-4" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+        <div class="form-group">
+            <label asp-for="Nome">Titulo</label>
+            <input asp-for="Nome" class="form-control" required/>
+        </div>
+        <div class="form-group">
+            <label asp-for="Genero">Gênero</label>
+            <input asp-for="Genero" class="form-control" required/>
+        </div>
+        <div>
+            <label asp-for="Classificacao">Classificação Indicativa</label>
+            <input asp-for="Classificacao" required/>
+        </div>
+        <div>
+            <label>Cartaz do Filme</label>
+            <input type="file" name="file" accept="image/jpg, image/png"/>
+            <h3>@ViewData["Message"]</h3>
+        </div>
+        <input type="submit" value="Salvar" class="btn btn-primary"/>
+    </form>
+</div>

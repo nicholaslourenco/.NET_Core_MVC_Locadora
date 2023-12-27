@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace Locadora.Models
 {
-    public class Filme
+    public class FilmeViewModel
     {
         [Key()]
         public int Id { get; set; }

@@ -1,7 +1,8 @@
+using System.Net;
 using Locadora.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Locadora.Controllers 
+namespace Locadora.Controllers
 {
     public class UsuarioController : Controller
     {
@@ -21,17 +22,30 @@ namespace Locadora.Controllers
 
         //Cadastro------------------------------------------------------------------------
 
+        [HttpGet]
         public IActionResult CadastroUser()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult CadastroUser(Usuario usuario)
+        public IActionResult CadastroUser(UsuarioViewModel usuario)
         {
-            usuario.Senha = Criptografo.TextoCriptografado(usuario.Senha);
-            new UsuarioService().Inserir(usuario);
-            return RedirectToAction("CadastroRealizado");
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:5291/locadora/api/");
+                //HTTP POST
+                var postTask = client.PostAsJsonAsync<UsuarioViewModel>("Usuario", usuario);
+                postTask.Wait();
+                var result = postTask.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("CadastroRealizado");
+                }
+            }
+            ModelState.AddModelError(string.Empty, "Erro no Servidor.");
+            return View(usuario);
         }
 
         public IActionResult CadastroRealizado()
@@ -45,8 +59,29 @@ namespace Locadora.Controllers
         {
             Autenticacao.CheckLogin(this);
             Autenticacao.verificaTipoUser(this);
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:5291/locadora/api/");
 
-            return View(new UsuarioService().Listar());
+                //HTTP GET
+                var responseTask = client.GetAsync("Usuario");
+                responseTask.Wait();
+                var result = responseTask.Result;
+
+                List<UsuarioViewModel> users;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<List<UsuarioViewModel>>();
+                    readTask.Wait();
+                    users = readTask.Result;
+                }
+                else
+                {
+                    users = new List<UsuarioViewModel>();
+                    ModelState.AddModelError(string.Empty, "Erro no Servidor.");
+                }
+                return View(users);
+            }
         }
 
         //Edição--------------------------------------------------------------------------
@@ -54,41 +89,73 @@ namespace Locadora.Controllers
         public IActionResult EdicaoUser(int id)
         {
             Autenticacao.CheckLogin(this);
-            Usuario u = new UsuarioService().BuscaId(id);
-            return View(u);
+            Autenticacao.verificaTipoUser(this);
+            UsuarioViewModel user = null;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:5291/locadora/api/Usuario/");
+
+                // HTTP GET
+                var responseTask = client.GetAsync("id?id=" + id.ToString());
+                responseTask.Wait();
+                var result = responseTask.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<UsuarioViewModel>();
+                    readTask.Wait();
+
+                    user = readTask.Result;
+                }
+            }
+
+            return View(user);
         }
 
         [HttpPost]
-        public IActionResult EdicaoUser(Usuario usuarioEditar)
+        public IActionResult EdicaoUser(UsuarioViewModel usuarioEditar)
         {
-            new UsuarioService().Editar(usuarioEditar);
-            return RedirectToAction("ListaDeUsuarios");
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:5291/locadora/api/Usuario/");
+
+                // HTTP PUT
+                var putTask = client.PutAsJsonAsync<UsuarioViewModel>(usuarioEditar.Id.ToString(), usuarioEditar);
+                putTask.Wait();
+                var result = putTask.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("ListaDeUsuarios");
+                }
+            }
+            return View(usuarioEditar);
         }
 
         //Exclusão------------------------------------------------------------------------
+
 
         public IActionResult ExcluirUser(int id)
         {
             Autenticacao.CheckLogin(this);
             Autenticacao.verificaTipoUser(this);
+            UsuarioViewModel user = null;
 
-            return View(new UsuarioService().BuscaId(id));
-        }
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:5291/locadora/api/");
 
-        [HttpPost]
-        public IActionResult ExcluirUser(string decisao, int id)
-        {
-            if (decisao == "EXCLUIR")
-            {
-                ViewData["Mensagem"] = "Exclusão do Usuário" + new UsuarioService().BuscaId(id).Nome + "realizada com sucesso";
-                new UsuarioService().Excluir(id);
-                return View("ListaDeUsuarios", new UsuarioService().Listar());
+                // HTTP DELETE
+                var deleteTask = client.DeleteAsync("Usuario/" + id.ToString());
+                deleteTask.Wait();
+                var result = deleteTask.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("ListaDeUsuarios");
+                }
             }
-            else
-            {
-                ViewData["Mensagem"] = "Exclusão Cancelada";
-                return View("ListaDeUsuarios", new UsuarioService().Listar());
-            }
+            return View(user);
         }
     }
 }

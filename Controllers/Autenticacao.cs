@@ -10,8 +10,8 @@ namespace Locadora.Controllers
     public class Autenticacao
     {
         public static void CheckLogin(Controller controller)
-        {   
-            if(string.IsNullOrEmpty(controller.HttpContext.Session.GetString("Login")))
+        {
+            if (string.IsNullOrEmpty(controller.HttpContext.Session.GetString("Login")))
             {
                 controller.Request.HttpContext.Response.Redirect("/Home/Login");
             }
@@ -19,13 +19,32 @@ namespace Locadora.Controllers
 
         public static bool verificacaoLoginSenha(string login, string senha, Controller controller)
         {
-            using (Context context = new Context())
+            using (var client = new HttpClient())
             {
-                verificaAdmin(context);
-                senha = Criptografo.TextoCriptografado(senha);
+                verificaAdmin(); // Problema Chato
 
-                IQueryable<Usuario> UsuarioEncontrado = context.Usuarios.Where(u => u.Login == login && u.Senha == senha);
-                List<Usuario> ListaUsuarioEncontrado = UsuarioEncontrado.ToList();
+                client.BaseAddress = new Uri("http://localhost:5291/locadora/api/");
+
+                //HTTP GET
+                var responseTask = client.GetAsync("Usuario");
+                responseTask.Wait();
+                var result = responseTask.Result;
+
+                IEnumerable<UsuarioViewModel> users; // Problema
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<IEnumerable<UsuarioViewModel>>();
+                    readTask.Wait();
+                    users = readTask.Result; // Problema
+                }
+                else
+                {
+                    users = null; // Problema
+                    Console.WriteLine("Erro no Servidor");
+                }
+
+                IEnumerable<UsuarioViewModel> UsuarioEncontrado = users.Where(u => u.Login == login && u.Senha == senha); // Problema
+                List<UsuarioViewModel> ListaUsuarioEncontrado = UsuarioEncontrado.ToList();
 
                 if (ListaUsuarioEncontrado.Count == 0)
                 {
@@ -41,26 +60,56 @@ namespace Locadora.Controllers
             }
         }
 
-        public static void verificaAdmin(Context context)
+        public static void verificaAdmin()
         {
-            IQueryable<Usuario> userEncontrado = context.Usuarios.Where(u => u.Login == "admin");
-
-            if (userEncontrado.ToList().Count == 0)
+            using (var client = new HttpClient())
             {
-                Usuario admin = new Usuario();
-                admin.Login = "admin";
-                admin.Senha = Criptografo.TextoCriptografado("123");
-                admin.Tipo = Usuario.admin;
-                admin.Nome = "Administrator";
+                client.BaseAddress = new Uri("http://localhost:5291/locadora/api/");
 
-                context.Usuarios.Add(admin);
-                context.SaveChanges();
+                //HTTP GET
+                var responseTask = client.GetAsync("Usuario");
+                responseTask.Wait();
+                var result = responseTask.Result;
+
+                IEnumerable<UsuarioViewModel> users; // Problema
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<IEnumerable<UsuarioViewModel>>();
+                    readTask.Wait();
+                    users = readTask.Result; // Problema
+                }
+                else
+                {
+                    users = null; // Problema
+                    Console.WriteLine("Erro no Servidor");
+                }
+
+                IEnumerable<UsuarioViewModel> userEncontrado = users.Where(u => u.Login == "admin");
+
+                if (userEncontrado.ToList().Count == 0)
+                {
+                    UsuarioViewModel admin = new UsuarioViewModel();
+                    admin.Login = "admin";
+                    admin.Senha = "123";
+                    admin.Tipo = UsuarioViewModel.admin;
+                    admin.Nome = "Administrator";
+
+                    //HTTP POST
+                    var postTask = client.PostAsJsonAsync<UsuarioViewModel>("Usuario", admin);
+                    postTask.Wait();
+                    var resultPost = postTask.Result;
+
+                    if (result.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("Cadastro do Usuário Admin Realizado com Sucesso!");
+                    }
+                }
             }
         }
 
         public static void verificaTipoUser(Controller controller)
         {
-            if (!(controller.HttpContext.Session.GetInt32("Tipo") == Usuario.admin))
+            if (!(controller.HttpContext.Session.GetInt32("Tipo") == UsuarioViewModel.admin))
             {
                 controller.Request.HttpContext.Response.Redirect("/Usuario/NeedAdmin");
             }

@@ -6,88 +6,190 @@ using System;
 
 namespace Locadora.Controllers
 {
-    
     public class LocacaoController : Controller
     {
+
+        [HttpGet]
         public IActionResult Cadastro()
         {
             Autenticacao.CheckLogin(this);
-            FilmesService filmesService = new FilmesService();
-            LocacaoService emprestimoService = new LocacaoService();
+            IEnumerable<FilmeViewModel> filmes = null;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:5291/locadora/api/");
 
-            CadLocacaoViewModel cadModel = new CadLocacaoViewModel();
-            cadModel.Filmes = filmesService.ListarDisponiveis();
-            return View(cadModel);
+                //HTTP GET
+                var responseTask = client.GetAsync("Filme/tipoFiltro-filtro?tipoFiltro=null&filtro=null");
+                responseTask.Wait();
+                var result = responseTask.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<IList<FilmeViewModel>>();
+                    readTask.Wait();
+                    filmes = readTask.Result;
+                }
+                else
+                {
+                    filmes = Enumerable.Empty<FilmeViewModel>();
+                    ModelState.AddModelError(string.Empty, "Erro no Servidor.");
+                }
+
+                CadLocacaoViewModel cadModel = new CadLocacaoViewModel();
+                cadModel.Filmes = filmes;
+                return View(cadModel);
+
+            }
         }
 
         [HttpPost]
         public IActionResult Cadastro(CadLocacaoViewModel viewModel)
         {
-            LocacaoService locacaoService = new LocacaoService();
-            
-            if(viewModel.Locacao.Id == 0)
+            using (var client = new HttpClient())
             {
-                locacaoService.Inserir(viewModel.Locacao);
+                client.BaseAddress = new Uri("http://localhost:5291/locadora/api/");
+                //HTTP POST
+                var postTask = client.PostAsJsonAsync<LocacaoViewModel>("Locacao", viewModel.Locacao);
+                postTask.Wait();
+                var result = postTask.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Listagem");
+                }
             }
-            else
-            {
-                locacaoService.Editar(viewModel.Locacao);
-            }
-            return RedirectToAction("Listagem");
+            ModelState.AddModelError(string.Empty, "Erro no Servidor");
+            return RedirectToAction("Falha");
         }
 
         public IActionResult Listagem(string tipoFiltro, string filtro, string intensPorPagina, int numDaPagina, int paginaAtual)
         {
-            Autenticacao.CheckLogin(this);
-            FiltroLocacao empFiltro = null;
-            if (!string.IsNullOrEmpty(filtro))
+            using (var client = new HttpClient())
             {
-                empFiltro = new FiltroLocacao();
-                empFiltro.Filtro = filtro;
-                empFiltro.TipoFiltro = tipoFiltro;
-            }
-
+                Autenticacao.CheckLogin(this);
+                Autenticacao.verificaTipoUser(this);
+                if (string.IsNullOrEmpty(tipoFiltro))
+                {
+                    tipoFiltro = "null";
+                }
+                if (string.IsNullOrEmpty(filtro))
+                {
+                    filtro = "null";
+                }
                 ViewData["emprestimosPorPagina"] = (string.IsNullOrEmpty(intensPorPagina) ? 10 : Int32.Parse(intensPorPagina));
                 ViewData["paginaAtual"] = (paginaAtual != 0 ? paginaAtual : 1);
 
-            LocacaoService service = new LocacaoService();
-            return View(service.Listar(empFiltro));
+                client.BaseAddress = new Uri("http://localhost:5291/locadora/api/");
+
+                //HTTP GET
+                var responseTask = client.GetAsync($"Locacao/tipoFiltro-filtro?tipoFiltro={tipoFiltro}&filtro={filtro}");
+                responseTask.Wait();
+                var result = responseTask.Result;
+
+                List<LocacaoViewModel> locacoes;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<List<LocacaoViewModel>>();
+                    readTask.Wait();
+                    locacoes = readTask.Result;
+                }
+                else
+                {
+                    locacoes = new List<LocacaoViewModel>();
+                    ModelState.AddModelError(string.Empty, "Erro no Servidor.");
+                }
+                return View(locacoes);
+            }
         }
+
 
         public IActionResult Edicao(int id)
         {
-            FilmesService filmesService = new FilmesService();
-            LocacaoService locacaoService = new LocacaoService();
-            Locacao locacao = locacaoService.BuscaId(id);
+            Autenticacao.CheckLogin(this);
+            Autenticacao.verificaTipoUser(this);
+            CadLocacaoViewModel locacao = new CadLocacaoViewModel();
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:5291/locadora/api/");
 
-            CadLocacaoViewModel cadModel = new CadLocacaoViewModel();
-            cadModel.Filmes = filmesService.ListarDisponiveis();
-            cadModel.Locacao = locacao;
-            
-            return View(cadModel);
+                // HTTP GET Locações
+                var responseTaskLoc = client.GetAsync("Locacao/id?id=" + id.ToString());
+                responseTaskLoc.Wait();
+                var resultLoc = responseTaskLoc.Result;
+
+                if (resultLoc.IsSuccessStatusCode)
+                {
+                    var readTask = resultLoc.Content.ReadAsAsync<LocacaoViewModel>();
+                    readTask.Wait();
+
+                    locacao.Locacao = readTask.Result;
+                }
+
+                // HTTP GET Filmes
+                var responseTaskFilm = client.GetAsync($"Filme/tipoFiltro-filtro?tipoFiltro=null&filtro=null");
+                responseTaskFilm.Wait();
+                var resultFilm = responseTaskFilm.Result;
+
+                if (resultFilm.IsSuccessStatusCode)
+                {
+                    var readTask = resultFilm.Content.ReadAsAsync<IEnumerable<FilmeViewModel>>();
+                    readTask.Wait();
+
+                    locacao.Filmes = readTask.Result;
+                }
+            }
+
+            return View(locacao);
         }
 
+        [HttpPost]
+        public IActionResult Edicao(CadLocacaoViewModel locacaoEditar)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:5291/locadora/api/Locacao/");
+
+                // HTTP PUT
+                var putTask = client.PutAsJsonAsync<LocacaoViewModel>(locacaoEditar.Locacao.Id.ToString(), locacaoEditar.Locacao);
+                putTask.Wait();
+                var result = putTask.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Listagem");
+                }
+            }
+            return RedirectToAction("Falha");
+        }
+
+        
         public IActionResult Excluir(int id)
         {
             Autenticacao.CheckLogin(this);
             Autenticacao.verificaTipoUser(this);
-            return View(new LocacaoService().BuscaId(id));
+            Console.WriteLine(id);
+            LocacaoViewModel locacao = null;
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:5291/locadora/api/");
+
+                // HTTP DELETE
+                var deleteTask = client.DeleteAsync("Locacao/" + id.ToString());
+                deleteTask.Wait();
+                var result = deleteTask.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Listagem");
+                }
+            }
+            return View(locacao);
         }
 
-        [HttpPost]
-        public IActionResult Excluir(string decisao, int id)
+        public IActionResult Falha()
         {
-            if (decisao == "EXCLUIR")
-            {
-                ViewData["Mensagem"] = "Exclusão da locação no nome de" + new LocacaoService().BuscaId(id).NomeUsuario + " realizada com sucesso";
-                new LocacaoService().Excluir(id);
-                return RedirectToAction("Listagem", new LocacaoService().Listar());
-            }
-            else
-            {
-                ViewData["Mensagem"] = "Exclusão cancelada";
-                return RedirectToAction("Listagem", new LocacaoService().Listar());
-            }
+            return View();
         }
     }
 }

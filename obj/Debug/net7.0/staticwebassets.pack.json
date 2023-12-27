@@ -13,12 +13,12 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
-      "Id": "C:\\GitHub\\Projetos WEB\\Locadora\\wwwroot\\images\\imgTeste.jpeg",
-      "PackagePath": "staticwebassets\\images\\imgTeste.jpeg"
-    },
-    {
       "Id": "C:\\GitHub\\Projetos WEB\\Locadora\\wwwroot\\js\\jquery.mask.min.js",
       "PackagePath": "staticwebassets\\js\\jquery.mask.min.js"
+    },
+    {
+      "Id": "C:\\GitHub\\Projetos WEB\\Locadora\\wwwroot\\js\\jquery.min.js",
+      "PackagePath": "staticwebassets\\js\\jquery.min.js"
     },
     {
       "Id": "C:\\GitHub\\Projetos WEB\\Locadora\\wwwroot\\js\\site.js",
@@ -239,6 +239,14 @@
     {
       "Id": "C:\\GitHub\\Projetos WEB\\Locadora\\wwwroot\\lib\\jquery\\LICENSE.txt",
       "PackagePath": "staticwebassets\\lib\\jquery\\LICENSE.txt"
+    },
+    {
+      "Id": "C:\\GitHub\\Projetos WEB\\Locadora\\wwwroot\\lib\\jquery\\dist\\code.jquery.com_jquery-3.7.0.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\code.jquery.com_jquery-3.7.0.min.js"
+    },
+    {
+      "Id": "C:\\GitHub\\Projetos WEB\\Locadora\\wwwroot\\lib\\jquery\\dist\\jquery-3.7.0.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery-3.7.0.js"
     },
     {
       "Id": "C:\\GitHub\\Projetos WEB\\Locadora\\wwwroot\\lib\\jquery\\dist\\jquery.js",

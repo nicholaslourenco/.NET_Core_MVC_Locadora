@@ -5,6 +5,8 @@ a.navbar-brand {
   white-space: normal;
   text-align: center;
   word-break: break-all;
+  color: #fff;
+  font-weight: bold;
 }
 
 /* Provide sufficient contrast against white background */
@@ -26,9 +28,28 @@ a {
 
 /* Sticky footer styles
 -------------------------------------------------- */
-html {
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
   font-size: 14px;
+  background-color: #1c1c36;
+  color: #fff !important;
 }
+
+.jumbotron {
+  background-color: #1c1c36 !important;
+}
+
+.textos {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.cabecalho {
+  background-color: #020133;
+}
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;
@@ -53,23 +74,50 @@ button.accept-policy {
 
 /* Sticky footer styles
 -------------------------------------------------- */
-html {
-  position: relative;
-  min-height: 100%;
-}
 
-body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
-}
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
-}
+  #wrapper{
+    min-height: 100%;
+  }
+
+  div.body-content{
+    /** Altura do rodapé tem que ser igual a isso aqui e vice-versa **/
+    padding-bottom: 60px;
+  }
+
+  footer{
+    width: 100%;
+    height: 60px;
+    position: relative;
+    bottom: 0;
+    left: 0;
+  }
 
 .td {
   color: red;
+}
+
+.background {
+  background-color: #1c1c36;
+}
+
+/*Página Principal*/
+
+.divContainerCards {
+  display: flex;
+}
+
+.filmeCard {
+  border: 1px solid #fff;
+  border-radius: 5px;
+  margin-top: 40px;
+}
+
+.imgCard {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.filmeCard p {
+  font-size: 16px;
+  font-weight: bold;
 }

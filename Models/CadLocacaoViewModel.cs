@@ -4,7 +4,7 @@ namespace Locadora.Models
 {
     public class CadLocacaoViewModel
     {
-        public ICollection<Filme> Filmes { get; set; }
-        public Locacao Locacao { get; set; }
+        public IEnumerable<FilmeViewModel> Filmes { get; set; }
+        public LocacaoViewModel Locacao { get; set; }
     }
 }
